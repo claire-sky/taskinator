@@ -15,12 +15,25 @@ var taskFormHandler = function() {
 
     formE1.reset();
 
+    var isEdit = formE1.hasAttribute("data-task-id");
+    
     var taskDataObj = {
         name: taskNameInput,
         type: taskTypeInput
     };
 
-    createTaskE1(taskDataObj);
+    if (isEdit) {
+        var taskId = formE1.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    }
+
+    else {
+        var taskDataObj = {
+            name: taskNameInput,
+            type: taskTypeInput
+        };
+        createTaskE1(taskDataObj);
+    }
 };
 
 var createTaskE1 = function(taskDataObj) {
@@ -86,13 +99,44 @@ var createTaskActions = function(taskId) {
 };
 
 var taskButtonHandler = function(event) {
-    console.log(event.target);
+    var targetE1 = event.target;
 
-    if(event.target.matches(".delete-btn")) {
+    // Edit button was clicked
+    if (targetE1.matches(".edit-btn")) {
+        var taskId = event.target.getAttribute("data-task-id");
+        editTask(taskId);
+    }
+
+    // Delete button was clicked
+    else if (targetE1.matches(".delete-btn")) {
         var taskId = event.target.getAttribute("data-task-id");
         deleteTask(taskId);
-    };
+    }
 };
+
+var editTask = function(taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    var taskName = taskSelected.querySelector("h3.task-name").textContent;
+    var taskType = taskSelected.querySelector("span.task-type").textContent;
+
+    document.querySelector("input[name='task-name']").value = taskName;
+    document.querySelector("select[name='task-type']").value = taskType;
+    document.querySelector("#save-task").textContent = "Save Task";
+
+    formE1.setAttribute("data-task-id", taskId);
+};
+
+var completeEditTask = function(taskName, taskType, taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    alert("Task Udpated!");
+
+    formE1.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
+}
 
 var deleteTask = function(taskId) {
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
