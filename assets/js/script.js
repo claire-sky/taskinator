@@ -2,6 +2,8 @@ var formE1 = document.querySelector("#task-form");
 var tasksToDoE1 = document.querySelector("#tasks-to-do");
 var taskIdCounter = 0;
 var pageContentE1 = document.querySelector("#page-content");
+var tasksInProgressE1 = document.querySelector("#tasks-in-progress");
+var tasksCompletedE1 = document.querySelector("#tasks-completed");
 
 var taskFormHandler = function() {
     event.preventDefault();
@@ -143,5 +145,24 @@ var deleteTask = function(taskId) {
     taskSelected.remove();
 };
 
+var taskStatusChangeHandler = function(event) {
+    var taskId = event.target.getAttribute("data-task-id");
+    var statusValue = event.target.value.toLowerCase();
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    if (statusValue === "to do") {
+        tasksToDoE1.appendChild(taskSelected);
+    }
+
+    else if (statusValue === "in progress") {
+        tasksInProgressE1.appendChild(taskSelected);
+    }
+
+    else if (statusValue === "completed") {
+        tasksCompletedE1.appendChild(taskSelected);
+    };
+};
+
 formE1.addEventListener("submit", taskFormHandler);
 pageContentE1.addEventListener("click", taskButtonHandler);
+pageContentE1.addEventListener("change", taskStatusChangeHandler);
